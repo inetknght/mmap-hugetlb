@@ -67,13 +67,22 @@ raw_fd
 		return get();
 	}
 
-	~raw_fd(
+	void
+	close(
 	) noexcept
 	{
 		if (-1 != fd_)
 		{
+			// ignore error for simplicity
 			::close(fd_);
+			fd_ = -1;
 		}
+	}
+
+	~raw_fd(
+	) noexcept
+	{
+		close();
 	}
 
 private:
@@ -131,13 +140,22 @@ mmap_ptr
 		return get();
 	}
 
-	~mmap_ptr(
+	void
+	unmap(
 	) noexcept
 	{
 		if (ptr_)
 		{
+			// ignore error for simplicity
 			::munmap(ptr_, sz_);
+			ptr_ = nullptr;
 		}
+	}
+
+	~mmap_ptr(
+	) noexcept
+	{
+		unmap();
 	}
 
 private:
@@ -216,6 +234,9 @@ try
 
 	mmap_ptr ptr{pathname, mmap_size, mmap_offset};
 	std::cout << "memory-mapped to 0x" << std::hex << std::setw(16) << std::setfill('0') << *ptr << std::endl;
+
+	// once it's mapped, we can close the fd
+	fd.close();
 
 	std::span bytes{reinterpret_cast<std::uint8_t*>(*ptr), mmap_size};
 	std::size_t number_of_zeroes{0};
