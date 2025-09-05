@@ -5,3 +5,5 @@ Demonstrates memory mapping on Linux using 1GB huge TLB to avoid large numbers o
 To exercise, run [`./test.bash`](./test.bash).
 
 To see the examples, look at [`./main.cpp`](./main.cpp).
+
+For comments, see [Hacker News comment thread](https://news.ycombinator.com/item?id=45132710).
