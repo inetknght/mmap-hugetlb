@@ -21,39 +21,67 @@ resize_file ./here-1KiB "${KiB}"
 resize_file ./here-1GiB "${GiB}"
 resize_file ./here-1.5GiB "${GiB1p5}"
 
+echo "Testing with no parameters, expecting failure"
 if ./a.out; then
-	>&2 echo "No parameters should have failed (file empty)!"
+	>&2 echo "No parameters should have failed (no file to map)!"
 	exit 1;
 fi
 
+echo
+echo "Testing with non-existent file, expecting failure"
+if ./a.out ./not-here; then
+	>&2 echo "Non-existent file should have failed (no file to map)!"
+	exit 1;
+fi
+
+echo
+echo "Testing with empty file, expecting failure"
+if ./a.out ./here; then
+	>&2 echo "Empty file should have failed (file empty)!"
+	exit 1;
+fi
+
+echo
+echo "Testing with 1KiB file, expecting failure"
 if ./a.out ./here-1KiB; then
 	>&2 echo "./here-1KiB should have failed (file too small)!"
 	exit 1
 fi
 
+echo
+echo "Testing with 1GiB file, expecting success"
 if ! ./a.out ./here-1GiB; then
 	>&2 echo "./here-1GiB should have succeeded!"
 	exit 1
 fi
 
+echo
+echo "Testing with 1GiB file with 1KiB offset, expecting failure"
 if ./a.out ./here-1GiB 0 "${KiB}"; then
 	>&2 echo "./here-1GiB with 1KiB offset should have failed (offset not aligned to 1GiB boundary)!"
 	exit 1
 fi
 
+echo
+echo "Testing with 1.5GiB file; expecting success"
 if ! ./a.out ./here-1.5GiB; then
 	>&2 echo "./here-1.5GiB should have succeeded!"
 	exit 1
 fi
 
+echo
+echo "Testing with 1.5GiB file with 1KiB offset, expecting failure"
 if ./a.out ./here-1.5GiB 0 "${KiB}"; then
 	>&2 echo "./here-1.5GiB with 1KiB offset should have failed (offset not aligned to 1GiB boundary)!"
 	exit 1
 fi
 
+echo
+echo "Testing with 1.5GiB file with 1GiB offset, expecting failure"
 if ./a.out ./here-1.5GiB 0 "${GiB}"; then
 	>&2 echo "./here-1.5GiB with 1GiB offset should have failed (offset leads to 1GiB boundary, but results in bus error past 512MiB)!"
 	exit 1
 fi
 
-echo "Success!"
+echo
+echo "Success! Works as according to mmap() documentation. See 'man 2 mmap'."
