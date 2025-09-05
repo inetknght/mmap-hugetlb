@@ -37,7 +37,7 @@ if ! ./a.out ./here-1GiB; then
 fi
 
 if ./a.out ./here-1GiB 0 "${KiB}"; then
-	>&2 echo "./here-1GiB with 1KiB offset should have failed (offset not aligned to 1GB boundary)!"
+	>&2 echo "./here-1GiB with 1KiB offset should have failed (offset not aligned to 1GiB boundary)!"
 	exit 1
 fi
 
@@ -47,12 +47,12 @@ if ! ./a.out ./here-1.5GiB; then
 fi
 
 if ./a.out ./here-1.5GiB 0 "${KiB}"; then
-	>&2 echo "./here-1.5GiB with 1KiB offset should have failed (offset not aligned to 1GB boundary)!"
+	>&2 echo "./here-1.5GiB with 1KiB offset should have failed (offset not aligned to 1GiB boundary)!"
 	exit 1
 fi
 
 if ./a.out ./here-1.5GiB 0 "${GiB}"; then
-	>&2 echo "./here-1.5GiB with 1KiB offset should have failed (offset leads to 1GB boundary, but results in bus error past 512MiB)!"
+	>&2 echo "./here-1.5GiB with 1GiB offset should have failed (offset leads to 1GiB boundary, but results in bus error past 512MiB)!"
 	exit 1
 fi
 
